@@ -53,8 +53,8 @@ module Dice
     if line =~ /quit/ or line =~ /exit/
       exit
     end
-    /(\d+)d(\d+) ?(\+)? ?(\d+)? ?(".*?")?/i.match line do |m|
-      dice = m[1].to_i
+    /(\d+)?d(\d+) *(\+)? *(\d+)? *(".*?")?/i.match line do |m|
+      dice = m[1].nil? ? 1 : m[1].to_i
       sides = m[2].to_i
       modifier = m[4].to_i
       text = m[5]
