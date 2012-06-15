@@ -17,7 +17,7 @@ module Dice
         /\\e\[(\d+)m(\d+)\\e\[0m/i.match value.to_s do |m|
           value = m[2].to_i
         end
-        sum + value
+        sum + value.to_i
       end
       finalComma = (results.length > 2) ? "," : ""
       last = results.pop
