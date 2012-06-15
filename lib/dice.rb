@@ -1,16 +1,16 @@
 require "dice/version"
 
 module Dice
-  def report(results, modifier)
+  def report(results, modifier, text)
     results = get_results(results)
     case results.length
     when 0
-      "I didn't roll any dice"
+      answer = "I didn't roll any dice"
     when 1
       if modifier == 0
-        "I rolled a #{green(results[0])}."
+        answer = "I rolled a #{green(results[0])}."
       else
-        "I rolled a (#{results[0]}) + #{modifier} is #{green(results[0].to_i + modifier.to_i)}."
+        answer = "I rolled a (#{results[0]}) + #{modifier} is #{green(results[0].to_i + modifier.to_i)}."
       end
     else
       total = results.reduce do |sum, value|
@@ -22,11 +22,15 @@ module Dice
       finalComma = (results.length > 2) ? "," : ""
       last = results.pop
       if modifier == 0
-        "I rolled #{results.join(", ")}#{finalComma} and #{last}, making #{green(total)}"
+        answer = "I rolled #{results.join(", ")}#{finalComma} and #{last}, making #{green(total)}"
       else
-        "I rolled #{results.join(", ")}#{finalComma} and #{last}, making (#{total}) + #{modifier} is #{green(total.to_i + modifier.to_i)}"
+        answer = "I rolled #{results.join(", ")}#{finalComma} and #{last}, making (#{total}) + #{modifier} is #{green(total.to_i + modifier.to_i)}"
       end
     end
+    unless text.nil?
+      answer << " #{text}"
+    end
+    answer
   end
 
   def roll(dice, sides)
@@ -49,11 +53,12 @@ module Dice
     if line =~ /quit/ or line =~ /exit/
       exit
     end
-    /(\d+)d(\d+) ?(\+)? ?(\d+)?/i.match line do |m|
+    /(\d+)d(\d+) ?(\+)? ?(\d+)? ?(".*?")?/i.match line do |m|
       dice = m[1].to_i
       sides = m[2].to_i
       modifier = m[4].to_i
-      report(roll(dice, sides), modifier)
+      text = m[5]
+      report(roll(dice, sides), modifier, text)
     end
   end
 
