@@ -1,14 +1,10 @@
 #!/usr/bin/env ruby
 
 require 'dice'
+include Dice
 
 print "> "
 ARGF.each do |line|
-  /(\d+)d(\d+)/i.match line do |m|
-    dice = m[1].to_i
-    sides = m[2].to_i
-    answer = Dice::report(Dice::roll(dice, sides))
-    puts answer
-  end
+  puts parseLine(line)
   print "> "
 end
