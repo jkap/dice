@@ -4,6 +4,10 @@ require 'dice'
 require 'readline'
 include Dice
 
-while line = Readline.readline('> ', true)
-  puts parseLine(line)
+begin
+  while line = Readline.readline('> ', true)
+    puts parseLine(line)
+  end
+rescue Interrupt
+  exit
 end
