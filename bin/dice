@@ -1,10 +1,9 @@
 #!/usr/bin/env ruby
 
 require 'dice'
+require 'readline'
 include Dice
 
-print "> "
-ARGF.each do |line|
+while line = Readline.readline('> ', true)
   puts parseLine(line)
-  print "> "
 end

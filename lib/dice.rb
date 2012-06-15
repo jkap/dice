@@ -1,20 +1,31 @@
 require "dice/version"
 
 module Dice
-  def report(results)
+  def report(results, modifier)
     results = get_results(results)
     case results.length
     when 0
       "I didn't roll any dice"
     when 1
-      "I rolled a #{results[0]}."
+      if modifier == 0
+        "I rolled a #{green(results[0])}."
+      else
+        "I rolled a (#{results[0]}) + #{modifier} is #{green(results[0].to_i + modifier.to_i)}."
+      end
     else
       total = results.reduce do |sum, value|
-        sum.to_i + value.to_i
+        /\\e\[(\d+)m(\d+)\\e\[0m/i.match value.to_s do |m|
+          value = m[2].to_i
+        end
+        sum + value
       end
       finalComma = (results.length > 2) ? "," : ""
       last = results.pop
-      "I rolled #{results.join(", ")}#{finalComma} and #{last}, making #{total}"
+      if modifier == 0
+        "I rolled #{results.join(", ")}#{finalComma} and #{last}, making #{green(total)}"
+      else
+        "I rolled #{results.join(", ")}#{finalComma} and #{last}, making (#{total}) + #{modifier} is #{green(total.to_i + modifier.to_i)}"
+      end
     end
   end
 
@@ -38,10 +49,11 @@ module Dice
     if line =~ /quit/ or line =~ /exit/
       exit
     end
-    /(\d+)d(\d+)/i.match line do |m|
+    /(\d+)d(\d+) ?(\+)? ?(\d+)?/i.match line do |m|
       dice = m[1].to_i
       sides = m[2].to_i
-      report(roll(dice, sides))
+      modifier = m[4].to_i
+      report(roll(dice, sides), modifier)
     end
   end
 
