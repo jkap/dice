@@ -17,7 +17,7 @@ module Dice
         /\\e\[(\d+)m(\d+)\\e\[0m/i.match value.to_s do |m|
           value = m[2].to_i
         end
-        sum + value.to_i
+        sum.to_i + value.to_i
       end
       finalComma = (results.length > 2) ? "," : ""
       last = results.pop
@@ -34,6 +34,7 @@ module Dice
   end
 
   def roll(dice, sides)
+    return [] if sides == 0
     dice.times.map{ 1+Random.rand(sides) } 
   end
 
